@@ -26,7 +26,7 @@ protected:
 
 private:
 	// sets debug line length
-	float m_Reach = 125.f;
+	float m_Reach = 200.f;
 
 	UPROPERTY()
 		UPhysicsHandleComponent* PhysicsHandle = nullptr;

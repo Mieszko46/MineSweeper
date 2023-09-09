@@ -21,7 +21,12 @@ void AActorSpawner::BeginPlay()
 		: FTransform::Identity;
 
 	FActorSpawnParameters SpawnParams;
-	GetWorld()->SpawnActor<AActor>(ActorToSpawn, SpawnerTransform, SpawnParams);
+	for (int32 i = 0; i < 2; i++)
+	{
+		FVector offset = FVector(50.0f * i, 0.0f, 0.0f);
+		SpawnerTransform.AddToTranslation(offset);
+		GetWorld()->SpawnActor<AActor>(ActorToSpawn, SpawnerTransform, SpawnParams);
+	}
 	
 }
 

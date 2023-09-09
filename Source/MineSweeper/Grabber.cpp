@@ -37,11 +37,17 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		5.f
 	);
 
+	FHitResult HitResult = GetFirstPhysicsBodyInReach();
+	AActor* ActorHit = HitResult.GetActor();
+
+	if (ActorHit) {
+		UE_LOG(LogTemp, Warning, TEXT("Line trace has hit: %s"), *(ActorHit->GetName()));
+	}
+
 	if(!PhysicsHandle)
 		return;
 
 	if (PhysicsHandle->GrabbedComponent) {
-		UE_LOG(LogTemp, Warning, TEXT("WE HAVE IT: %s !"), *GetOwner()->GetActorLocation().ToString());
 		PhysicsHandle->SetTargetLocation(GetPlayerReach());
 	}
 }
@@ -113,18 +119,18 @@ FVector UGrabber::GetPlayerReach() const
 
 	FVector LineTraceEnd = PlayerViewLocation + PlayerViewRotation.Vector() * m_Reach;
 
-	UE_LOG(LogTemp, Warning, TEXT("Actor location: %s"), *LineTraceEnd.ToString());
+	//UE_LOG(LogTemp, Warning, TEXT("Actor location: %s"), *LineTraceEnd.ToString());
 
-	DrawDebugLine(
-		GetWorld(),
-		PlayerViewLocation,
-		LineTraceEnd,
-		FColor(255, 0, 0),
-		false,
-		0.f,
-		0,
-		m_Reach
-	);
+	//DrawDebugLine(
+	//	GetWorld(),
+	//	PlayerViewLocation,
+	//	LineTraceEnd,
+	//	FColor(255, 0, 0),
+	//	false,
+	//	0.f,
+	//	0,
+	//	m_Reach
+	//);
 
 	return LineTraceEnd;
 }
@@ -132,7 +138,7 @@ FVector UGrabber::GetPlayerReach() const
 FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 {
 	FHitResult Hit;
-	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());;
+	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
 
 	GetWorld()->LineTraceSingleByObjectType(
 		OUT Hit,
