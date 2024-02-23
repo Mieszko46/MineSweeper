@@ -20,7 +20,6 @@ ACubePackage::ACubePackage()
 void ACubePackage::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -29,4 +28,3 @@ void ACubePackage::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-

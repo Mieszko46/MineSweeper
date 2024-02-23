@@ -15,6 +15,7 @@ class MINESWEEPER_API ACubePackage : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ACubePackage();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -25,7 +26,16 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 		UCapsuleComponent* CapsuleComp;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* BaseMesh;
 
+	// does ACTOR HAVE a MINE
+	bool bIsMine = false;
+
+	// has ACTOR been already PICKED
+	bool bWasPicked = false;
+
+	// how many MINES are NEAR
+	uint32 nearMines = 0;
 };
