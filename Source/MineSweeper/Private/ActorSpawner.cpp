@@ -9,7 +9,7 @@ AActorSpawner::AActorSpawner():
 	Y_Height(1),
 	Z_Deep(1),
 	PackageSize(100),
-	TotalNumberOfPackages(20),
+	TotalNumberOfPackages(10),
 	TotalNumberOfMines(5)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -29,8 +29,8 @@ void AActorSpawner::CreateBoardOnSpawnPoint()
 	// init board with nullptr
 	//AllPackages.Init(AActor(), X_Width * Y_Height * Z_Deep);
 	UE_LOG(LogTemp, Error, TEXT("Array size: %d"), X_Width * Y_Height * Z_Deep);
-	AllPackages.Reserve((X_Width * Y_Height * Z_Deep) + 1);
-	AllPackages.SetNumZeroed((X_Width * Y_Height * Z_Deep) + 1);
+	AllPackages.Reserve(X_Width * Y_Height * Z_Deep);
+	AllPackages.SetNumZeroed(X_Width * Y_Height * Z_Deep);
 
 	PlaceThePackages();
 }
@@ -100,17 +100,6 @@ void AActorSpawner::PlaceThePackages()
 
 				// Insert package to array
 				AllPackages[index] = SpawnedActor;
-				//if (index >= 0 && index < AllPackages.Num())
-				//{
-				//	for (int32 i = index + 1; i < AllPackages.Num() - 2; i++)
-				//	{
-				//		if (AllPackages[i] != nullptr) {
-				//			AActor* indx = AllPackages[i];
-				//			AllPackages[i] = AllPackages[i - 1];
-				//			AllPackages[i - 1] = indx;
-				//		}
-				//	}
-				//}
 
 				CurrentPlacedPackages += 1;
 
@@ -130,7 +119,6 @@ void AActorSpawner::PlaceThePackages()
 				Z_Position = Z_Deep;
 			}
 		}
-		PrintArray();
 	}
 }
 

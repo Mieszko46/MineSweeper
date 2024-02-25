@@ -31,6 +31,8 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	if (ActorHit && ActorHit->IsA<ACubePackage>()) {
 		UE_LOG(LogTemp, Warning, TEXT("Hited actor: %s"), *(ActorHit->GetName()));
+		ACubePackage* HitedPackage = Cast<ACubePackage>(ActorHit);
+		UE_LOG(LogTemp, Warning, TEXT("Hited actor index: %d"), HitedPackage->GetPackageIndex());
 	}
 
 	if(!PhysicsHandle)
