@@ -9,7 +9,7 @@ AActorSpawner::AActorSpawner():
 	Y_Height(1),
 	Z_Deep(1),
 	PackageSize(100),
-	TotalNumberOfPackages(25),
+	TotalNumberOfPackages(20),
 	TotalNumberOfMines(5)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -28,9 +28,22 @@ void AActorSpawner::CreateBoardOnSpawnPoint()
 
 	// init board with nullptr
 	//AllPackages.Init(AActor(), X_Width * Y_Height * Z_Deep);
-	AllPackages.SetNumZeroed(X_Width * Y_Height * Z_Deep);
+	UE_LOG(LogTemp, Error, TEXT("Array size: %d"), X_Width * Y_Height * Z_Deep);
+	AllPackages.Reserve((X_Width * Y_Height * Z_Deep) + 1);
+	AllPackages.SetNumZeroed((X_Width * Y_Height * Z_Deep) + 1);
 
 	PlaceThePackages();
+}
+
+void AActorSpawner::PrintArray()
+{
+	for (int32 i = 0; i < AllPackages.Num(); i++)
+	{
+		auto Package = AllPackages[i];
+		if (Package != nullptr)
+			UE_LOG(LogTemp, Error, TEXT("array elem on pos %d is: %d"), i, Package);
+		
+	}
 }
 
 void AActorSpawner::RandomizeBoardDimensions()
@@ -38,8 +51,6 @@ void AActorSpawner::RandomizeBoardDimensions()
 	while (true)
 	{
 		uint32 dimensionNumber = FMath::RandHelper(3);
-
-		UE_LOG(LogTemp, Error, TEXT("random number: %d"), dimensionNumber);
 
 		if (dimensionNumber == 0)
 			X_Width += 1;
@@ -78,8 +89,9 @@ void AActorSpawner::PlaceThePackages()
 
 		for (uint32 Z_Position = 0; Z_Position < Z_Deep; Z_Position++)
 		{
+			int32 index = X_RandomPosition * Y_Height * Z_Deep + Y_RandomPosition * Z_Deep + Z_Position;
 			//check if position is empty
-			if (GetActorByCoordinates(X_RandomPosition, Y_RandomPosition, Z_Position) == nullptr)
+			if (AllPackages[index] == nullptr)
 			{
 				// Spawn object
 				FVector offset = FVector(PackageSize * X_RandomPosition, PackageSize * Y_RandomPosition, PackageSize * Z_Position);
@@ -87,13 +99,38 @@ void AActorSpawner::PlaceThePackages()
 				AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(ActorToSpawn, InitTransform, temp);
 
 				// Insert package to array
-				AllPackages.Insert(SpawnedActor, (X_RandomPosition * Y_Height * Z_Deep + Y_RandomPosition * Z_Deep + Z_Position));
+				AllPackages[index] = SpawnedActor;
+				//if (index >= 0 && index < AllPackages.Num())
+				//{
+				//	for (int32 i = index + 1; i < AllPackages.Num() - 2; i++)
+				//	{
+				//		if (AllPackages[i] != nullptr) {
+				//			AActor* indx = AllPackages[i];
+				//			AllPackages[i] = AllPackages[i - 1];
+				//			AllPackages[i - 1] = indx;
+				//		}
+				//	}
+				//}
+
 				CurrentPlacedPackages += 1;
+
+				//Set package index
+				ACubePackage* Package = Cast<ACubePackage>(SpawnedActor);
+				Package->SetPackageIndex(index);
+
+				UE_LOG(LogTemp, Error, TEXT("Actor: %s | Package index: %d | coords: x=%d y=%d z=%d"), 
+					*(SpawnedActor->GetName()), 
+					Package->GetPackageIndex(),
+					X_RandomPosition,
+					Y_RandomPosition,
+					Z_Position
+				);
 
 				// To break from the loop
 				Z_Position = Z_Deep;
 			}
 		}
+		PrintArray();
 	}
 }
 
@@ -102,9 +139,9 @@ void AActorSpawner::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-AActor* AActorSpawner::GetActorByCoordinates(uint32 x, uint32 y, uint32 z)
+AActor* AActorSpawner::GetActorByIndex(int32 index)
 {
-	auto Package = AllPackages[x * Y_Height * Z_Deep + y * Z_Deep + z];
+	auto Package = AllPackages[index];
 	return Package;
 }
 

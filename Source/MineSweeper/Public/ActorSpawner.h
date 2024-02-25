@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "CubePackage.h"
 #include "SpawnerTarget.h"
 #include "ActorSpawner.generated.h"
 
@@ -36,7 +37,7 @@ private:
 	// @param x - package position in x-axis
 	// @param y - package position in y-axis
 	// @param z - package position in z-axis
-	AActor* GetActorByCoordinates(uint32 x, uint32 y, uint32 z);
+	AActor* GetActorByIndex(int32 index);
 
 	void CalculateCoordinatesFromIndex(uint32 index, uint32& out_x, uint32& out_y, uint32& out_z);
 
@@ -49,7 +50,7 @@ private:
 	//void SetMines();
 	#pragma endregion
 
-	#pragma region Attributes
+	#pragma region ATTRIBUTES
 	// Actor that will be spawned
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		TSubclassOf<class AActor> ActorToSpawn;
@@ -72,4 +73,6 @@ private:
 	uint32 TotalNumberOfMines;
 	const float FactorOfBoardComplexity = 1.3f;
 	#pragma endregion
+
+	void PrintArray();
 };

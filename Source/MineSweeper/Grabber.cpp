@@ -29,7 +29,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	FHitResult HitResult = GetFirstPhysicsBodyInReach();
 	AActor* ActorHit = HitResult.GetActor();
 
-	if (ActorHit) {
+	if (ActorHit && ActorHit->IsA<ACubePackage>()) {
 		UE_LOG(LogTemp, Warning, TEXT("Hited actor: %s"), *(ActorHit->GetName()));
 	}
 

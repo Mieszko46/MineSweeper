@@ -19,6 +19,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SetPackageIndex(uint32 index);
+	uint32 GetPackageIndex() const;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -30,12 +33,15 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* BaseMesh;
 
-	// does ACTOR HAVE a MINE
-	bool bIsMine = false;
+	// Does ACTOR HAVE a MINE
+	bool bIsMine;
 
-	// has ACTOR been already PICKED
-	bool bWasPicked = false;
+	// Has ACTOR been already PICKED
+	bool bWasPicked;
 
-	// how many MINES are NEAR
-	uint32 nearMines = 0;
+	// Index in array
+	uint32 IndexInArray;
+
+	// How many MINES are NEAR
+	uint32 nearMines;
 };
