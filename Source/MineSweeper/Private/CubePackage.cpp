@@ -42,3 +42,13 @@ uint32 ACubePackage::GetPackageIndex() const
 {
 	return IndexInArray;
 }
+
+void ACubePackage::SetPackageSpawner(AActor* Spawner)
+{
+	PackageSpawner = Spawner;
+}
+
+AActor* ACubePackage::GetPackageSpawner() const
+{
+	return PackageSpawner;
+}

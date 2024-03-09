@@ -20,6 +20,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void PrintArray();
+	bool CheckIfPackageCanBePicked(int32 index);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -40,6 +43,8 @@ private:
 	AActor* GetActorByIndex(int32 index);
 
 	void CalculateCoordinatesFromIndex(uint32 index, uint32& out_x, uint32& out_y, uint32& out_z);
+
+	uint32 CalculateIndexFromCoordinates(uint32 x, uint32 y, uint32 z);
 
 	void SetTotalNumberOfPackages(uint32 packages);
 
@@ -74,5 +79,4 @@ private:
 	const float FactorOfBoardComplexity = 1.3f;
 	#pragma endregion
 
-	void PrintArray();
 };

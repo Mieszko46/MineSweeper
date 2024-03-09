@@ -2,6 +2,7 @@
 
 #pragma once
 
+class AActorSpawner;
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/CapsuleComponent.h"
@@ -22,6 +23,10 @@ public:
 	void SetPackageIndex(uint32 index);
 	uint32 GetPackageIndex() const;
 
+	void SetPackageSpawner(AActor* Spawner);
+	AActor* GetPackageSpawner() const;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -32,6 +37,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* BaseMesh;
+
+	AActor* PackageSpawner;
 
 	// Does ACTOR HAVE a MINE
 	bool bIsMine;

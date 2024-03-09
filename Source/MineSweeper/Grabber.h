@@ -7,6 +7,7 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "CubePackage.h"
+#include "ActorSpawner.h"
 #include "Grabber.generated.h"
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -54,4 +55,9 @@ private:
 
 	// Return the first Actor within reach with physics body
 	FHitResult GetFirstPhysicsBodyInReach() const;
+
+	#pragma region Debugging
+	bool bDebugFlag;
+	uint32 DebugIndex;
+	#pragma endregion
 };

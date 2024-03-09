@@ -16,6 +16,22 @@ AActorSpawner::AActorSpawner():
 	PrimaryActorTick.bCanEverTick = false;
 }
 
+bool AActorSpawner::CheckIfPackageCanBePicked(int32 index)
+{
+	// We have to check if on top of this package there is no more packages
+	// next package in top has Z axis +1 so in array it is actor with 
+	// current index +1
+
+	if (index + 1 > AllPackages.Num())
+		return false;
+
+	if (AllPackages[index + 1] == nullptr) {
+		return true;
+	}
+
+	return false;
+}
+
 void AActorSpawner::BeginPlay()
 {
 	Super::BeginPlay();
@@ -83,13 +99,15 @@ void AActorSpawner::PlaceThePackages()
 		FActorSpawnParameters temp = SpawnParams;
 
 		FTransform InitTransform = SpawnerTransform;
+
 		// We take random position in 2d board and then go in deep 
 		uint32 X_RandomPosition = FMath::RandHelper(X_Width);
 		uint32 Y_RandomPosition = FMath::RandHelper(Y_Height);
 
 		for (uint32 Z_Position = 0; Z_Position < Z_Deep; Z_Position++)
 		{
-			int32 index = X_RandomPosition * Y_Height * Z_Deep + Y_RandomPosition * Z_Deep + Z_Position;
+			int32 index = CalculateIndexFromCoordinates(X_RandomPosition, Y_RandomPosition, Z_Position);
+
 			//check if position is empty
 			if (AllPackages[index] == nullptr)
 			{
@@ -106,6 +124,7 @@ void AActorSpawner::PlaceThePackages()
 				//Set package index
 				ACubePackage* Package = Cast<ACubePackage>(SpawnedActor);
 				Package->SetPackageIndex(index);
+				Package->SetPackageSpawner(this);
 
 				UE_LOG(LogTemp, Error, TEXT("Actor: %s | Package index: %d | coords: x=%d y=%d z=%d"), 
 					*(SpawnedActor->GetName()), 
@@ -140,6 +159,11 @@ void AActorSpawner::CalculateCoordinatesFromIndex(uint32 index, uint32& out_x, u
 	out_y = index % Y_Height;
 	index /= Y_Height;
 	out_x = index;
+}
+
+uint32 AActorSpawner::CalculateIndexFromCoordinates(uint32 x, uint32 y, uint32 z)
+{
+	return x * Y_Height* Z_Deep + y * Z_Deep + z;
 }
 
 void AActorSpawner::SetTotalNumberOfPackages(uint32 packages)
