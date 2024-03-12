@@ -29,15 +29,6 @@ protected:
 
 
 private:
-	// sets debug line length
-	float m_Reach = 200.f;
-
-	UPROPERTY()
-		UPhysicsHandleComponent* PhysicsHandle = nullptr;
-
-	UPROPERTY()
-		UInputComponent* InputComponent = nullptr;
-
 	// Checking for Physics Handle Component. Protection from nullptr
 	void FindPhysicsHandle();
 	void SetupInputComponent();
@@ -55,6 +46,20 @@ private:
 
 	// Return the first Actor within reach with physics body
 	FHitResult GetFirstPhysicsBodyInReach() const;
+
+	void HighlightObject(AActor* HitActor);
+
+	#pragma region Attributes
+	UPROPERTY()
+		UPhysicsHandleComponent* PhysicsHandle = nullptr;
+
+	UPROPERTY()
+		UInputComponent* InputComponent = nullptr;
+
+	AActor* FocusedActor;
+
+	// sets debug line length
+	float m_Reach = 200.f;
 
 	#pragma region Debugging
 	bool bDebugFlag;

@@ -3,7 +3,10 @@
 #define OUT
 
 // Sets default values
-UGrabber::UGrabber():bDebugFlag(true), DebugIndex(-1)
+UGrabber::UGrabber():
+	FocusedActor(nullptr),
+	bDebugFlag(true), 
+	DebugIndex(-1)
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryComponentTick.bCanEverTick = true;
@@ -28,34 +31,22 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	FHitResult HitResult = GetFirstPhysicsBodyInReach();
 	AActor* ActorHit = HitResult.GetActor();
-
-	if (ActorHit && ActorHit->IsA<ACubePackage>() && bDebugFlag) {
-		ACubePackage* HittedPackage = Cast<ACubePackage>(ActorHit);
-		if (DebugIndex != HittedPackage->GetPackageIndex()) {
-			DebugIndex = HittedPackage->GetPackageIndex();
-			UE_LOG(LogTemp, Warning, TEXT("Hited package: %s"), *(HittedPackage->GetName()));
-			UE_LOG(LogTemp, Warning, TEXT("Hited package index: %d"), HittedPackage->GetPackageIndex());
-			AActorSpawner* Spawner = Cast<AActorSpawner>(HittedPackage->GetPackageSpawner());
-			UE_LOG(
-				LogTemp, Warning, TEXT("Does package can be picked: %s"),
-				(Spawner->CheckIfPackageCanBePicked(HittedPackage->GetPackageIndex()) ? TEXT("TRUE") : TEXT("false"))
-			);
-		}
-
-		//UE_LOG(LogTemp, Warning, TEXT("Hited actor: %s"), *(ActorHit->GetName()));
-		//UE_LOG(LogTemp, Warning, TEXT("Hited actor index: %d"), HitedPackage->GetPackageIndex());
-		//UE_LOG(LogTemp, Warning, TEXT("Spawner of actor: %s"), *(HitedPackage->GetPackageSpawner()->GetName()));
-
-		//Spawner->PrintArray();
-		//bDebugFlag = false;
+	
+	if (ActorHit) {
+		HighlightObject(ActorHit);
+	}
+	else {
+		if (FocusedActor)
+			Cast<ACubePackage>(FocusedActor)->SetIsActorFocued(false);
+			FocusedActor = nullptr;
 	}
 
-	if(!PhysicsHandle)
-		return;
+	//if(!PhysicsHandle)
+	//	return;
 
-	if (PhysicsHandle->GrabbedComponent) {
-		PhysicsHandle->SetTargetLocation(GetPlayerReach());
-	}
+	//if (PhysicsHandle->GrabbedComponent) {
+	//	PhysicsHandle->SetTargetLocation(GetPlayerReach());
+	//}
 }
 
 void UGrabber::FindPhysicsHandle()
@@ -63,7 +54,7 @@ void UGrabber::FindPhysicsHandle()
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 
 	if (PhysicsHandle == nullptr)
-		UE_LOG(LogTemp, Error, TEXT("No physics handle component included to object: %s !"), *GetOwner()->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("No physics handle component included to object: %s !"), *GetOwner()->GetName());
 }
 
 void UGrabber::SetupInputComponent()
@@ -155,4 +146,43 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 	);
 
 	return Hit;
+}
+
+void UGrabber::HighlightObject(AActor* ActorHit)
+{
+	if (ActorHit->IsA<ACubePackage>()) 
+	{
+		if (FocusedActor != ActorHit) 
+		{
+			// unset highlight of passed object
+			if (FocusedActor != nullptr) 
+			{
+				Cast<ACubePackage>(FocusedActor)->SetIsActorFocued(false);
+			}
+
+			FocusedActor = ActorHit;
+			ACubePackage* HittedPackage = Cast<ACubePackage>(FocusedActor);
+
+			AActorSpawner* Spawner = Cast<AActorSpawner>(HittedPackage->GetPackageSpawner());
+			if (Spawner->CheckIfPackageCanBePicked(HittedPackage->GetPackageIndex()))
+			{
+				HittedPackage->SetIsActorFocued(true);
+			}
+
+			UE_LOG(LogTemp, Warning, TEXT("Hited package: %s"), *(HittedPackage->GetName()));
+			UE_LOG(LogTemp, Warning, TEXT("Hited package index: %d"), HittedPackage->GetPackageIndex());
+			UE_LOG(
+				LogTemp, Warning, TEXT("Does package can be picked: %s"),
+				(Spawner->CheckIfPackageCanBePicked(HittedPackage->GetPackageIndex()) ? TEXT("TRUE") : TEXT("false"))
+			);
+			UE_LOG(
+				LogTemp, Warning, TEXT("Is it last in Z: %s"),
+				((HittedPackage->GetIsLastInZ_Axis()) ? TEXT("TRUE") : TEXT("false"))
+			);
+			//UE_LOG(
+			//	LogTemp, Warning, TEXT("Does package contain mine: %s"),
+			//	((HittedPackage->IsItMine()) ? TEXT("TRUE") : TEXT("false"))
+			//);
+		}
+	}
 }

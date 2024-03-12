@@ -16,26 +16,40 @@ AActorSpawner::AActorSpawner():
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-bool AActorSpawner::CheckIfPackageCanBePicked(int32 index)
-{
-	// We have to check if on top of this package there is no more packages
-	// next package in top has Z axis +1 so in array it is actor with 
-	// current index +1
-
-	if (index + 1 > AllPackages.Num())
-		return false;
-
-	if (AllPackages[index + 1] == nullptr) {
-		return true;
-	}
-
-	return false;
-}
-
 void AActorSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	CreateBoardOnSpawnPoint();
+	RandomizeMinesPlacement();
+}
+
+void AActorSpawner::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
+bool AActorSpawner::CheckIfPackageCanBePicked(int32 index)
+{
+	// We have to check if on top of this package there is no more packages
+	// next package in top has Z axis +1 so in array it is actor with 
+	// current index +1 
+	// Last element in deep for example when we have board (1,2,2) last 
+	// element will be (0,0,1) we must check if Z is last because then it will
+	// check next index which might be package on different dimension
+
+
+	if (index == -1 || index + 1 > AllPackages.Num())
+		return false;
+
+	// I gave them separate, because if it will be last element in the array
+	// it will crash in the next IF statement
+	if (Cast<ACubePackage>(AllPackages[index])->GetIsLastInZ_Axis())
+		return true;
+
+	if (AllPackages[index + 1] == nullptr ) 
+		return true;
+
+	return false;
 }
 
 void AActorSpawner::CreateBoardOnSpawnPoint()
@@ -44,7 +58,7 @@ void AActorSpawner::CreateBoardOnSpawnPoint()
 
 	// init board with nullptr
 	//AllPackages.Init(AActor(), X_Width * Y_Height * Z_Deep);
-	UE_LOG(LogTemp, Error, TEXT("Array size: %d"), X_Width * Y_Height * Z_Deep);
+	UE_LOG(LogTemp, Warning, TEXT("Array size: %d"), X_Width * Y_Height * Z_Deep);
 	AllPackages.Reserve(X_Width * Y_Height * Z_Deep);
 	AllPackages.SetNumZeroed(X_Width * Y_Height * Z_Deep);
 
@@ -57,7 +71,7 @@ void AActorSpawner::PrintArray()
 	{
 		auto Package = AllPackages[i];
 		if (Package != nullptr)
-			UE_LOG(LogTemp, Error, TEXT("array elem on pos %d is: %d"), i, Package);
+			UE_LOG(LogTemp, Warning, TEXT("array elem on pos %d is: %d"), i, Package);
 		
 	}
 }
@@ -85,7 +99,7 @@ void AActorSpawner::PlaceThePackages()
 	//if (GEngine)
 	//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, AllPackages[1].GetName());
 
-	UE_LOG(LogTemp, Error, TEXT("BOARD params: %d, %d, %d"), X_Width, Y_Height, Z_Deep);
+	UE_LOG(LogTemp, Warning, TEXT("BOARD params: %d, %d, %d"), X_Width, Y_Height, Z_Deep);
 
 	FActorSpawnParameters SpawnParams;
 
@@ -126,7 +140,12 @@ void AActorSpawner::PlaceThePackages()
 				Package->SetPackageIndex(index);
 				Package->SetPackageSpawner(this);
 
-				UE_LOG(LogTemp, Error, TEXT("Actor: %s | Package index: %d | coords: x=%d y=%d z=%d"), 
+				if (Z_Position + 1 == Z_Deep)
+				{
+					Package->SetIsLastInZ_Axis(true);
+				}
+
+				UE_LOG(LogTemp, Warning, TEXT("Actor: %s | Package index: %d | coords: x=%d y=%d z=%d"),
 					*(SpawnedActor->GetName()), 
 					Package->GetPackageIndex(),
 					X_RandomPosition,
@@ -141,12 +160,26 @@ void AActorSpawner::PlaceThePackages()
 	}
 }
 
-void AActorSpawner::Tick(float DeltaTime)
+void AActorSpawner::RandomizeMinesPlacement()
 {
-	Super::Tick(DeltaTime);
+	uint32 counter = TotalNumberOfMines;
+	while (counter > 0)
+	{
+		uint32 packageIndex = FMath::RandHelper(TotalNumberOfPackages);
+		if (AllPackages[packageIndex] != nullptr)
+		{
+			ACubePackage* Package = Cast<ACubePackage>(AllPackages[packageIndex]);
+			if (Package->IsItMine() == false) 
+			{
+				Package->SetIsMineToTrue();
+				UE_LOG(LogTemp, Warning, TEXT("Mine set to index: %d"), Package->GetPackageIndex());
+				--counter;
+			}
+		}
+	}
 }
 
-AActor* AActorSpawner::GetActorByIndex(int32 index)
+AActor* AActorSpawner::GetActorByIndex(int32 index) const
 {
 	auto Package = AllPackages[index];
 	return Package;
@@ -161,9 +194,9 @@ void AActorSpawner::CalculateCoordinatesFromIndex(uint32 index, uint32& out_x, u
 	out_x = index;
 }
 
-uint32 AActorSpawner::CalculateIndexFromCoordinates(uint32 x, uint32 y, uint32 z)
+uint32 AActorSpawner::CalculateIndexFromCoordinates(uint32 x, uint32 y, uint32 z) const
 {
-	return x * Y_Height* Z_Deep + y * Z_Deep + z;
+	return x * Y_Height * Z_Deep + y * Z_Deep + z;
 }
 
 void AActorSpawner::SetTotalNumberOfPackages(uint32 packages)

@@ -40,19 +40,17 @@ private:
 	// @param x - package position in x-axis
 	// @param y - package position in y-axis
 	// @param z - package position in z-axis
-	AActor* GetActorByIndex(int32 index);
+	AActor* GetActorByIndex(int32 index) const;
 
 	void CalculateCoordinatesFromIndex(uint32 index, uint32& out_x, uint32& out_y, uint32& out_z);
-
-	uint32 CalculateIndexFromCoordinates(uint32 x, uint32 y, uint32 z);
+	uint32 CalculateIndexFromCoordinates(uint32 x, uint32 y, uint32 z) const;
 
 	void SetTotalNumberOfPackages(uint32 packages);
-
-	void SetTotalNumberOfMines(uint32 mines);
 	#pragma endregion
 
 	#pragma region Mines methods
-	//void SetMines();
+	void SetTotalNumberOfMines(uint32 mines);
+	void RandomizeMinesPlacement();
 	#pragma endregion
 
 	#pragma region ATTRIBUTES
@@ -67,6 +65,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		uint32 PackageSize;
 
+
 	// 3d Array of all packages - to mo¿emy daæ do jakiegoœ innego obiektu, da³bym to do Spawnera, bo jest jeden i z tamt¹d byœmy
 	// odwo³ywali siê do poszczególnych obiektów, dziêki czemu mamy lepsz¹ optymalizacjê, mniej pamiêci bêdziemy zajmowaæ
 	TArray<AActor*> AllPackages;
@@ -76,7 +75,8 @@ private:
 
 	uint32 TotalNumberOfPackages;
 	uint32 TotalNumberOfMines;
-	const float FactorOfBoardComplexity = 1.3f;
+
+	const float FactorOfBoardComplexity = 1.5f;
 	#pragma endregion
 
 };

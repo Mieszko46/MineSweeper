@@ -7,6 +7,7 @@
 ACubePackage::ACubePackage():
 	bIsMine(false),
 	bWasPicked(false),
+	isLastIn_Z(false),
 	IndexInArray(-1),
 	nearMines(0)
 {
@@ -51,4 +52,40 @@ void ACubePackage::SetPackageSpawner(AActor* Spawner)
 AActor* ACubePackage::GetPackageSpawner() const
 {
 	return PackageSpawner;
+}
+
+void ACubePackage::SetIsMineToTrue()
+{
+	bIsMine = true;
+}
+
+bool ACubePackage::IsItMine() const
+{
+	return bIsMine;
+}
+
+void ACubePackage::SetIsActorFocued(bool isFocused)
+{
+	IsActorFocued = isFocused;
+	if (isFocused) {
+		BaseMesh->SetRenderCustomDepth(true);
+	}
+	else {
+		BaseMesh->SetRenderCustomDepth(false);
+	}
+}
+
+bool ACubePackage::GetIsActorFocued() const
+{
+	return IsActorFocued;
+}
+
+void ACubePackage::SetIsLastInZ_Axis(bool isLast)
+{
+	isLastIn_Z = isLast;
+}
+
+bool ACubePackage::GetIsLastInZ_Axis() const
+{
+	return isLastIn_Z;
 }

@@ -26,6 +26,14 @@ public:
 	void SetPackageSpawner(AActor* Spawner);
 	AActor* GetPackageSpawner() const;
 
+	void SetIsMineToTrue();
+	bool IsItMine() const;
+
+	void SetIsActorFocued(bool isFocused);
+	bool GetIsActorFocued() const;
+
+	void SetIsLastInZ_Axis(bool isLast);
+	bool GetIsLastInZ_Axis() const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -46,8 +54,14 @@ private:
 	// Has ACTOR been already PICKED
 	bool bWasPicked;
 
+	// Does player look on this actor
+	bool IsActorFocued;
+
 	// Index in array
 	uint32 IndexInArray;
+
+	// Is it last element in Z axis?
+	bool isLastIn_Z;
 
 	// How many MINES are NEAR
 	uint32 nearMines;
