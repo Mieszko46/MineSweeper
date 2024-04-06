@@ -21,6 +21,7 @@ void AActorSpawner::BeginPlay()
 	Super::BeginPlay();
 	CreateBoardOnSpawnPoint();
 	RandomizeMinesPlacement();
+	AssignNumbersOfNearMines();
 }
 
 void AActorSpawner::Tick(float DeltaTime)
@@ -58,9 +59,9 @@ void AActorSpawner::CreateBoardOnSpawnPoint()
 
 	// init board with nullptr
 	//AllPackages.Init(AActor(), X_Width * Y_Height * Z_Deep);
-	UE_LOG(LogTemp, Warning, TEXT("Array size: %d"), X_Width * Y_Height * Z_Deep);
-	AllPackages.Reserve(X_Width * Y_Height * Z_Deep);
-	AllPackages.SetNumZeroed(X_Width * Y_Height * Z_Deep);
+	UE_LOG(LogTemp, Warning, TEXT("Array size: %d"), ArraySpace);
+	AllPackages.Reserve(ArraySpace);
+	AllPackages.SetNumZeroed(ArraySpace);
 
 	PlaceThePackages();
 }
@@ -89,7 +90,9 @@ void AActorSpawner::RandomizeBoardDimensions()
 		else
 			Z_Deep += 1;
 
-		if (X_Width * Y_Height * Z_Deep >= TotalNumberOfPackages * FactorOfBoardComplexity)
+		ArraySpace = X_Width * Y_Height * Z_Deep;
+
+		if (ArraySpace >= TotalNumberOfPackages * FactorOfBoardComplexity)
 			break;
 	}
 }
@@ -160,12 +163,45 @@ void AActorSpawner::PlaceThePackages()
 	}
 }
 
+bool AActorSpawner::IsPackageAMine(uint32 x, uint32 y, uint32 z) 
+{
+	if (AllPackages[CalculateIndexFromCoordinates(x, y, z)] != nullptr)
+	{
+		ACubePackage* Package = Cast<ACubePackage>(AllPackages[CalculateIndexFromCoordinates(x, y, z)]);
+		if (Package->IsItMine())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("index: %d, coords %d, %d ,%d"), CalculateIndexFromCoordinates(x, y, z), x, y, z);
+			return true;
+		}
+	}
+	return false;
+}
+
+uint32 AActorSpawner::CountNearMines(uint32 index)
+{
+	uint32 NumberOfMines = 0;
+	uint32 x, y, z;
+	CalculateCoordinatesFromIndex(index, x, y, z);
+	UE_LOG(LogTemp, Warning, TEXT("Package mines of index: %d, coords %d, %d ,%d"), index, x, y, z);
+
+	if (x > 0) NumberOfMines += IsPackageAMine(x - 1, y, z);
+	if (x < X_Width - 1) NumberOfMines += IsPackageAMine(x + 1, y, z);
+
+	if (y > 0) NumberOfMines += IsPackageAMine(x, y - 1, z);
+	if (y < Y_Height - 1) NumberOfMines += IsPackageAMine(x, y + 1, z);
+
+	if (z > 0) NumberOfMines += IsPackageAMine(x, y, z - 1);
+	if (z < Z_Deep - 1) NumberOfMines += IsPackageAMine(x, y, z + 1);
+
+	return NumberOfMines;
+}
+
 void AActorSpawner::RandomizeMinesPlacement()
 {
 	uint32 counter = TotalNumberOfMines;
 	while (counter > 0)
 	{
-		uint32 packageIndex = FMath::RandHelper(TotalNumberOfPackages);
+		uint32 packageIndex = FMath::RandHelper(ArraySpace);
 		if (AllPackages[packageIndex] != nullptr)
 		{
 			ACubePackage* Package = Cast<ACubePackage>(AllPackages[packageIndex]);
@@ -175,6 +211,19 @@ void AActorSpawner::RandomizeMinesPlacement()
 				UE_LOG(LogTemp, Warning, TEXT("Mine set to index: %d"), Package->GetPackageIndex());
 				--counter;
 			}
+		}
+	}
+}
+
+void AActorSpawner::AssignNumbersOfNearMines()
+{
+	for (int32 packageIndex = 0; packageIndex < AllPackages.Num(); packageIndex++)
+	{
+		if (AllPackages[packageIndex] != nullptr)
+		{
+			ACubePackage* Package = Cast<ACubePackage>(AllPackages[packageIndex]);
+			Package->SetNumberOfNearMines(CountNearMines(packageIndex));
+			UE_LOG(LogTemp, Warning, TEXT("Index: %d, mines: %d"), Package->GetPackageIndex(),  Package->GetNumberOfNearMines());
 		}
 	}
 }

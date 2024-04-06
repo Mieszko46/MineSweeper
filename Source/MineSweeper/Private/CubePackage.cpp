@@ -9,7 +9,7 @@ ACubePackage::ACubePackage():
 	bWasPicked(false),
 	isLastIn_Z(false),
 	IndexInArray(-1),
-	nearMines(0)
+	NumberOfNearMines(0)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -62,6 +62,16 @@ void ACubePackage::SetIsMineToTrue()
 bool ACubePackage::IsItMine() const
 {
 	return bIsMine;
+}
+
+void ACubePackage::SetNumberOfNearMines(uint32 nearMines)
+{
+	NumberOfNearMines = nearMines;
+}
+
+uint32 ACubePackage::GetNumberOfNearMines() const
+{
+	return NumberOfNearMines;
 }
 
 void ACubePackage::SetIsActorFocued(bool isFocused)

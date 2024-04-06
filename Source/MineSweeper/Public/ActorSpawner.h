@@ -35,23 +35,28 @@ private:
 	void PlaceThePackages();
 	#pragma endregion
 
+
 	#pragma region Packages methods
 	// get package from an array of all packages 
 	// @param x - package position in x-axis
 	// @param y - package position in y-axis
 	// @param z - package position in z-axis
 	AActor* GetActorByIndex(int32 index) const;
-
 	void CalculateCoordinatesFromIndex(uint32 index, uint32& out_x, uint32& out_y, uint32& out_z);
 	uint32 CalculateIndexFromCoordinates(uint32 x, uint32 y, uint32 z) const;
-
 	void SetTotalNumberOfPackages(uint32 packages);
 	#pragma endregion
 
+
 	#pragma region Mines methods
 	void SetTotalNumberOfMines(uint32 mines);
+	bool IsPackageAMine(uint32 x, uint32 y, uint32 z);
+	//Checks if near packages have mines and return total number of them
+	uint32 CountNearMines(uint32 index);
 	void RandomizeMinesPlacement();
+	void AssignNumbersOfNearMines();
 	#pragma endregion
+
 
 	#pragma region ATTRIBUTES
 	// Actor that will be spawned
@@ -65,10 +70,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		uint32 PackageSize;
 
-
-	// 3d Array of all packages - to mo¿emy daæ do jakiegoœ innego obiektu, da³bym to do Spawnera, bo jest jeden i z tamt¹d byœmy
-	// odwo³ywali siê do poszczególnych obiektów, dziêki czemu mamy lepsz¹ optymalizacjê, mniej pamiêci bêdziemy zajmowaæ
 	TArray<AActor*> AllPackages;
+	uint32 ArraySpace;
 
 	// Board dimension
 	uint32 X_Width, Y_Height, Z_Deep;

@@ -26,8 +26,12 @@ public:
 	void SetPackageSpawner(AActor* Spawner);
 	AActor* GetPackageSpawner() const;
 
+	#pragma region Mines methods
 	void SetIsMineToTrue();
 	bool IsItMine() const;
+	void SetNumberOfNearMines(uint32 nearMines);
+	uint32 GetNumberOfNearMines() const;
+	#pragma endregion
 
 	void SetIsActorFocued(bool isFocused);
 	bool GetIsActorFocued() const;
@@ -64,5 +68,5 @@ private:
 	bool isLastIn_Z;
 
 	// How many MINES are NEAR
-	uint32 nearMines;
+	uint32 NumberOfNearMines;
 };
