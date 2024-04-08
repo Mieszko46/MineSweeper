@@ -6,6 +6,7 @@
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "Misc/OutputDeviceNull.h"
 #include "CubePackage.h"
 #include "ActorSpawner.h"
 #include "Grabber.generated.h"
@@ -22,6 +23,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mines")
+		int NearMines;
 
 protected:
 	// Called when the game starts

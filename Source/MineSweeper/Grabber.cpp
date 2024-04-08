@@ -37,7 +37,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	}
 	else {
 		if (FocusedActor)
-			Cast<ACubePackage>(FocusedActor)->SetIsActorFocued(false);
+			Cast<ACubePackage>(FocusedActor)->SetIsActorFocued(false, false);
 			FocusedActor = nullptr;
 	}
 
@@ -157,7 +157,7 @@ void UGrabber::HighlightObject(AActor* ActorHit)
 			// unset highlight of passed object
 			if (FocusedActor != nullptr) 
 			{
-				Cast<ACubePackage>(FocusedActor)->SetIsActorFocued(false);
+				Cast<ACubePackage>(FocusedActor)->SetIsActorFocued(false, false);
 			}
 
 			FocusedActor = ActorHit;
@@ -166,11 +166,15 @@ void UGrabber::HighlightObject(AActor* ActorHit)
 			AActorSpawner* Spawner = Cast<AActorSpawner>(HittedPackage->GetPackageSpawner());
 			if (Spawner->CheckIfPackageCanBePicked(HittedPackage->GetPackageIndex()))
 			{
-				HittedPackage->SetIsActorFocued(true);
+				HittedPackage->SetIsActorFocued(true, true);
+			}
+			else {
+				HittedPackage->SetIsActorFocued(true, false);
 			}
 
 			UE_LOG(LogTemp, Warning, TEXT("Hited package: %s"), *(HittedPackage->GetName()));
 			UE_LOG(LogTemp, Warning, TEXT("Hited package index: %d"), HittedPackage->GetPackageIndex());
+			UE_LOG(LogTemp, Warning, TEXT("Hited package near mines: %d"), HittedPackage->GetNumberOfNearMines());
 			UE_LOG(
 				LogTemp, Warning, TEXT("Does package can be picked: %s"),
 				(Spawner->CheckIfPackageCanBePicked(HittedPackage->GetPackageIndex()) ? TEXT("TRUE") : TEXT("false"))
@@ -179,10 +183,14 @@ void UGrabber::HighlightObject(AActor* ActorHit)
 				LogTemp, Warning, TEXT("Is it last in Z: %s"),
 				((HittedPackage->GetIsLastInZ_Axis()) ? TEXT("TRUE") : TEXT("false"))
 			);
-			//UE_LOG(
-			//	LogTemp, Warning, TEXT("Does package contain mine: %s"),
-			//	((HittedPackage->IsItMine()) ? TEXT("TRUE") : TEXT("false"))
-			//);
+			UE_LOG(
+				LogTemp, Warning, TEXT("Does package contain mine: %s"),
+				((HittedPackage->IsItMine()) ? TEXT("TRUE") : TEXT("false"))
+			);
+
+			NearMines = HittedPackage->GetNumberOfNearMines();
+			FOutputDeviceNull OutputDeviceNull;
+			GetOwner()->CallFunctionByNameWithArguments(TEXT("UpdateMineScannerValue"), OutputDeviceNull, nullptr, true);
 		}
 	}
 }

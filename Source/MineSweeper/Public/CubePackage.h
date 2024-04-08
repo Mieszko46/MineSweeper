@@ -33,7 +33,7 @@ public:
 	uint32 GetNumberOfNearMines() const;
 	#pragma endregion
 
-	void SetIsActorFocued(bool isFocused);
+	void SetIsActorFocued(bool isFocused, bool canBePicked);
 	bool GetIsActorFocued() const;
 
 	void SetIsLastInZ_Axis(bool isLast);

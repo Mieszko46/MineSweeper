@@ -74,13 +74,21 @@ uint32 ACubePackage::GetNumberOfNearMines() const
 	return NumberOfNearMines;
 }
 
-void ACubePackage::SetIsActorFocued(bool isFocused)
+void ACubePackage::SetIsActorFocued(bool isFocused, bool canBePicked)
 {
 	IsActorFocued = isFocused;
-	if (isFocused) {
+	if (canBePicked) 
+	{
 		BaseMesh->SetRenderCustomDepth(true);
+		BaseMesh->SetCustomDepthStencilValue(1);
 	}
-	else {
+	else if (isFocused && !canBePicked)
+	{
+		BaseMesh->SetRenderCustomDepth(true);
+		BaseMesh->SetCustomDepthStencilValue(0);
+	}
+	else 
+	{
 		BaseMesh->SetRenderCustomDepth(false);
 	}
 }
