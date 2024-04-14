@@ -1,6 +1,8 @@
 #include "Grabber.h"
 
 #define OUT
+#define NOMINE "IA_Pick_No_Mine"
+#define MINE "IA_Pick_Mine"
 
 // Sets default values
 UGrabber::UGrabber():
@@ -35,11 +37,12 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	if (ActorHit) {
 		HighlightObject(ActorHit);
 	}
-	else {
-		if (FocusedActor)
-			Cast<ACubePackage>(FocusedActor)->SetIsActorFocued(false, false);
-			FocusedActor = nullptr;
-	}
+	// It makes ungightlight object if we are not looking at it
+	//else {
+	//	if (FocusedActor)
+	//		Cast<ACubePackage>(FocusedActor)->SetIsActorFocued(false, false);
+	//		FocusedActor = nullptr;
+	//}
 
 	//if(!PhysicsHandle)
 	//	return;
@@ -47,6 +50,20 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	//if (PhysicsHandle->GrabbedComponent) {
 	//	PhysicsHandle->SetTargetLocation(GetPlayerReach());
 	//}
+}
+
+void UGrabber::HandlePickup(FString mouseButton)
+{
+	if (mouseButton == NOMINE) {
+
+	}
+	if (mouseButton == MINE) {
+		// trzeba jeszcze aktualizowaæ po tym wszystkim miny pobli¿u ka¿dej paczki
+		// zmniejszyæ liczbê ogólnych min
+
+	}
+	else
+		return;
 }
 
 void UGrabber::FindPhysicsHandle()

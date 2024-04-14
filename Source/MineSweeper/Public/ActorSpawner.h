@@ -78,6 +78,7 @@ private:
 
 	uint32 TotalNumberOfPackages;
 	uint32 TotalNumberOfMines;
+	uint32 RemainingMines;
 
 	const float FactorOfBoardComplexity = 1.5f;
 	#pragma endregion

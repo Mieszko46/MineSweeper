@@ -26,6 +26,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mines")
 		int NearMines;
 
+	UFUNCTION(BlueprintCallable)
+		void HandlePickup(FString mouseButton);
+
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
