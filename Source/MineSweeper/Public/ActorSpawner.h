@@ -22,6 +22,8 @@ public:
 
 	void PrintArray();
 	bool CheckIfPackageCanBePicked(int32 index);
+	void RemoveActorFromArray(uint32 index);
+	void AssignNumbersOfNearMines();
 
 protected:
 	// Called when the game starts or when spawned
@@ -31,7 +33,9 @@ private:
 
 	#pragma region Board methods
 	void CreateBoardOnSpawnPoint();
+
 	void RandomizeBoardDimensions();
+
 	void PlaceThePackages();
 	#pragma endregion
 
@@ -42,19 +46,24 @@ private:
 	// @param y - package position in y-axis
 	// @param z - package position in z-axis
 	AActor* GetActorByIndex(int32 index) const;
+
 	void CalculateCoordinatesFromIndex(uint32 index, uint32& out_x, uint32& out_y, uint32& out_z);
+
 	uint32 CalculateIndexFromCoordinates(uint32 x, uint32 y, uint32 z) const;
+
 	void SetTotalNumberOfPackages(uint32 packages);
 	#pragma endregion
 
 
 	#pragma region Mines methods
 	void SetTotalNumberOfMines(uint32 mines);
+
 	bool IsPackageAMine(uint32 x, uint32 y, uint32 z);
+
 	//Checks if near packages have mines and return total number of them
 	uint32 CountNearMines(uint32 index);
+
 	void RandomizeMinesPlacement();
-	void AssignNumbersOfNearMines();
 	#pragma endregion
 
 

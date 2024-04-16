@@ -38,16 +38,15 @@ bool AActorSpawner::CheckIfPackageCanBePicked(int32 index)
 	// element will be (0,0,1) we must check if Z is last because then it will
 	// check next index which might be package on different dimension
 
-
 	if (index == -1 || index + 1 > AllPackages.Num())
 		return false;
 
 	// I gave them separate, because if it will be last element in the array
 	// it will crash in the next IF statement
-	if (Cast<ACubePackage>(AllPackages[index])->GetIsLastInZ_Axis())
+	if (Cast<ACubePackage>(AllPackages[index])->GetIsOnLastPositionInZ_Axis())
 		return true;
 
-	if (AllPackages[index + 1] == nullptr ) 
+	if (AllPackages[index + 1] == nullptr) 
 		return true;
 
 	return false;
@@ -145,7 +144,7 @@ void AActorSpawner::PlaceThePackages()
 
 				if (Z_Position + 1 == Z_Deep)
 				{
-					Package->SetIsLastInZ_Axis(true);
+					Package->SetIsOnLastPositionInZ_Axis(true);
 				}
 
 				UE_LOG(LogTemp, Warning, TEXT("Actor: %s | Package index: %d | coords: x=%d y=%d z=%d"),
@@ -232,6 +231,15 @@ AActor* AActorSpawner::GetActorByIndex(int32 index) const
 {
 	auto Package = AllPackages[index];
 	return Package;
+}
+
+void AActorSpawner::RemoveActorFromArray(uint32 index)
+{
+	if (index >= 0 && index < ArraySpace)
+	{
+		AllPackages[index]->Destroy();
+		AllPackages[index] = nullptr;
+	}
 }
 
 void AActorSpawner::CalculateCoordinatesFromIndex(uint32 index, uint32& out_x, uint32& out_y, uint32& out_z)

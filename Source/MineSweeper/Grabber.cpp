@@ -8,7 +8,8 @@
 UGrabber::UGrabber():
 	FocusedActor(nullptr),
 	bDebugFlag(true), 
-	DebugIndex(-1)
+	DebugIndex(-1),
+	NearMines(0)
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryComponentTick.bCanEverTick = true;
@@ -19,7 +20,6 @@ void UGrabber::BeginPlay()
 	Super::BeginPlay();
 
 	FindPhysicsHandle();
-	SetupInputComponent();
 }
 
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -44,26 +44,45 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	//		FocusedActor = nullptr;
 	//}
 
-	//if(!PhysicsHandle)
-	//	return;
-
-	//if (PhysicsHandle->GrabbedComponent) {
-	//	PhysicsHandle->SetTargetLocation(GetPlayerReach());
-	//}
 }
 
 void UGrabber::HandlePickup(FString mouseButton)
 {
-	if (mouseButton == NOMINE) {
+	if (FocusedActor != nullptr)
+	{
+		ACubePackage* PickedPackage = Cast<ACubePackage>(FocusedActor);
+		AActorSpawner* Spawner = Cast<AActorSpawner>(PickedPackage->GetPackageSpawner());
+		uint32 PackageIndex = PickedPackage->GetPackageIndex();
 
+		if (Spawner->CheckIfPackageCanBePicked(PackageIndex))
+		{
+			if (mouseButton == NOMINE) 
+			{
+				if (PickedPackage->IsItMine())
+				{
+					// TODO: koniec gry, przegra³eœ
+				}
+				else 
+				{
+					FocusedActor = nullptr;
+					Spawner->RemoveActorFromArray(PackageIndex);
+				}
+			}
+			else if (mouseButton == MINE) 
+			{
+				if (PickedPackage->IsItMine())
+				{
+					FocusedActor = nullptr;
+					Spawner->RemoveActorFromArray(PackageIndex);
+					Spawner->AssignNumbersOfNearMines();
+				}
+				else 
+				{
+					// TODO: koniec gry, przegra³eœ
+				}
+			}
+		}
 	}
-	if (mouseButton == MINE) {
-		// trzeba jeszcze aktualizowaæ po tym wszystkim miny pobli¿u ka¿dej paczki
-		// zmniejszyæ liczbê ogólnych min
-
-	}
-	else
-		return;
 }
 
 void UGrabber::FindPhysicsHandle()
@@ -72,16 +91,6 @@ void UGrabber::FindPhysicsHandle()
 
 	if (PhysicsHandle == nullptr)
 		UE_LOG(LogTemp, Warning, TEXT("No physics handle component included to object: %s !"), *GetOwner()->GetName());
-}
-
-void UGrabber::SetupInputComponent()
-{
-	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
-	if (InputComponent)
-	{
-		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
-		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
-	}
 }
 
 void UGrabber::Grab()
@@ -106,6 +115,13 @@ void UGrabber::Release()
 			return;
 		PhysicsHandle->ReleaseComponent();
 	}
+}
+
+void UGrabber::UpdateScannerDisplayValue(int packageMines)
+{
+	NearMines = packageMines;
+	FOutputDeviceNull OutputDeviceNull;
+	GetOwner()->CallFunctionByNameWithArguments(TEXT("UpdateMineScannerValue"), OutputDeviceNull, nullptr, true);
 }
 
 FVector UGrabber::GetPlayerLocation() const
@@ -189,6 +205,9 @@ void UGrabber::HighlightObject(AActor* ActorHit)
 				HittedPackage->SetIsActorFocued(true, false);
 			}
 
+			UpdateScannerDisplayValue(HittedPackage->GetNumberOfNearMines());
+
+			// DEBUG
 			UE_LOG(LogTemp, Warning, TEXT("Hited package: %s"), *(HittedPackage->GetName()));
 			UE_LOG(LogTemp, Warning, TEXT("Hited package index: %d"), HittedPackage->GetPackageIndex());
 			UE_LOG(LogTemp, Warning, TEXT("Hited package near mines: %d"), HittedPackage->GetNumberOfNearMines());
@@ -198,16 +217,12 @@ void UGrabber::HighlightObject(AActor* ActorHit)
 			);
 			UE_LOG(
 				LogTemp, Warning, TEXT("Is it last in Z: %s"),
-				((HittedPackage->GetIsLastInZ_Axis()) ? TEXT("TRUE") : TEXT("false"))
+				((HittedPackage->GetIsOnLastPositionInZ_Axis()) ? TEXT("TRUE") : TEXT("false"))
 			);
 			UE_LOG(
 				LogTemp, Warning, TEXT("Does package contain mine: %s"),
 				((HittedPackage->IsItMine()) ? TEXT("TRUE") : TEXT("false"))
 			);
-
-			NearMines = HittedPackage->GetNumberOfNearMines();
-			FOutputDeviceNull OutputDeviceNull;
-			GetOwner()->CallFunctionByNameWithArguments(TEXT("UpdateMineScannerValue"), OutputDeviceNull, nullptr, true);
 		}
 	}
 }

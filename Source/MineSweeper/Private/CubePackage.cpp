@@ -7,7 +7,7 @@
 ACubePackage::ACubePackage():
 	bIsMine(false),
 	bWasPicked(false),
-	isLastIn_Z(false),
+	isOnLastPositionIn_Z(false),
 	IndexInArray(-1),
 	NumberOfNearMines(0)
 {
@@ -98,12 +98,12 @@ bool ACubePackage::GetIsActorFocued() const
 	return IsActorFocued;
 }
 
-void ACubePackage::SetIsLastInZ_Axis(bool isLast)
+void ACubePackage::SetIsOnLastPositionInZ_Axis(bool isLast)
 {
-	isLastIn_Z = isLast;
+	isOnLastPositionIn_Z = isLast;
 }
 
-bool ACubePackage::GetIsLastInZ_Axis() const
+bool ACubePackage::GetIsOnLastPositionInZ_Axis() const
 {
-	return isLastIn_Z;
+	return isOnLastPositionIn_Z;
 }

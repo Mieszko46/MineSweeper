@@ -36,8 +36,8 @@ public:
 	void SetIsActorFocued(bool isFocused, bool canBePicked);
 	bool GetIsActorFocued() const;
 
-	void SetIsLastInZ_Axis(bool isLast);
-	bool GetIsLastInZ_Axis() const;
+	void SetIsOnLastPositionInZ_Axis(bool isLast);
+	bool GetIsOnLastPositionInZ_Axis() const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -64,8 +64,9 @@ private:
 	// Index in array
 	uint32 IndexInArray;
 
-	// Is it last element in Z axis?
-	bool isLastIn_Z;
+	// Is it last element in Z axis but it means in max Z value because 
+	// if it is then we don't need to search for neighbour
+	bool isOnLastPositionIn_Z;
 
 	// How many MINES are NEAR
 	uint32 NumberOfNearMines;

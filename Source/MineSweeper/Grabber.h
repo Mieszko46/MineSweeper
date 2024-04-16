@@ -38,9 +38,9 @@ protected:
 private:
 	// Checking for Physics Handle Component. Protection from nullptr
 	void FindPhysicsHandle();
-	void SetupInputComponent();
 	void Grab();
 	void Release();
+	void UpdateScannerDisplayValue(int packageMines);
 
 	// Return the Player position in world
 	FVector GetPlayerLocation() const;
