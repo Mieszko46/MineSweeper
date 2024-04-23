@@ -56,30 +56,26 @@ void UGrabber::HandlePickup(FString mouseButton)
 
 		if (Spawner->CheckIfPackageCanBePicked(PackageIndex))
 		{
-			if (mouseButton == NOMINE) 
+			if (mouseButton == NOMINE && !(PickedPackage->IsItMine()))
 			{
-				if (PickedPackage->IsItMine())
-				{
-					// TODO: koniec gry, przegra³eœ
-				}
-				else 
-				{
-					FocusedActor = nullptr;
-					Spawner->RemoveActorFromArray(PackageIndex);
-				}
+				FocusedActor = nullptr;
+				Spawner->RemoveActorFromArray(PackageIndex);
 			}
-			else if (mouseButton == MINE) 
+			else if (mouseButton == MINE && PickedPackage->IsItMine())
 			{
-				if (PickedPackage->IsItMine())
-				{
-					FocusedActor = nullptr;
-					Spawner->RemoveActorFromArray(PackageIndex);
-					Spawner->AssignNumbersOfNearMines();
-				}
-				else 
-				{
-					// TODO: koniec gry, przegra³eœ
-				}
+				FocusedActor = nullptr;
+				Spawner->RemoveActorFromArray(PackageIndex);
+				Spawner->AssignNumbersOfNearMines();
+			}
+			else 
+			{
+				GameOver(mouseButton);
+			}
+
+			// Win condition
+			if (Spawner->CheckIfAllPackagesPicked())
+			{
+				Win();
 			}
 		}
 	}
@@ -124,6 +120,18 @@ void UGrabber::UpdateScannerDisplayValue(int packageMines)
 	GetOwner()->CallFunctionByNameWithArguments(TEXT("UpdateMineScannerValue"), OutputDeviceNull, nullptr, true);
 }
 
+void UGrabber::GameOver(FString mouseButton)
+{ 
+	UE_LOG(LogTemp, Error, TEXT("GAME OVER: %s"), 
+		(mouseButton != MINE ? TEXT("You picked a bomb!") : TEXT("It was not a bomb!")));
+}
+
+void UGrabber::Win()
+{
+	FOutputDeviceNull OutputDeviceNull;
+	GetOwner()->CallFunctionByNameWithArguments(TEXT("EndGame"), OutputDeviceNull, nullptr, true);
+}
+
 FVector UGrabber::GetPlayerLocation() const
 {
 	FVector PlayerViewLocation;
@@ -151,16 +159,16 @@ FVector UGrabber::GetPlayerReach() const
 
 	//UE_LOG(LogTemp, Warning, TEXT("Actor location: %s"), *LineTraceEnd.ToString());
 
-	DrawDebugLine(
-		GetWorld(),
-		PlayerViewLocation,
-		LineTraceEnd,
-		FColor(255, 0, 0),
-		false,
-		0.f,
-		0,
-		2.0f
-	);
+	//DrawDebugLine(
+	//	GetWorld(),
+	//	PlayerViewLocation,
+	//	LineTraceEnd,
+	//	FColor(255, 0, 0),
+	//	false,
+	//	0.f,
+	//	0,
+	//	2.0f
+	//);
 
 	return LineTraceEnd;
 }

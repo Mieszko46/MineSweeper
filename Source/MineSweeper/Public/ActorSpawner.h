@@ -20,10 +20,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void Setup();
 	void PrintArray();
-	bool CheckIfPackageCanBePicked(int32 index);
+	bool CheckIfPackageCanBePicked(int32 index) const;
 	void RemoveActorFromArray(uint32 index);
 	void AssignNumbersOfNearMines();
+	bool CheckIfAllPackagesPicked() const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -87,7 +89,7 @@ private:
 
 	uint32 TotalNumberOfPackages;
 	uint32 TotalNumberOfMines;
-	uint32 RemainingMines;
+	uint32 PickedPackages;
 
 	const float FactorOfBoardComplexity = 1.5f;
 	#pragma endregion

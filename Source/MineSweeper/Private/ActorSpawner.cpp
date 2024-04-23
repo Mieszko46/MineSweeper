@@ -10,18 +10,32 @@ AActorSpawner::AActorSpawner():
 	Z_Deep(1),
 	PackageSize(100),
 	TotalNumberOfPackages(10),
-	TotalNumberOfMines(5)
+	TotalNumberOfMines(5),
+	PickedPackages(0)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void AActorSpawner::BeginPlay()
+void AActorSpawner::Setup()
 {
-	Super::BeginPlay();
+	X_Width = 1;
+	Y_Height = 1;
+	Z_Deep = 1;
+	PackageSize = 100;
+	TotalNumberOfPackages = 10;
+	TotalNumberOfMines = 5;
+	PickedPackages = 0;
+
 	CreateBoardOnSpawnPoint();
 	RandomizeMinesPlacement();
 	AssignNumbersOfNearMines();
+}
+
+void AActorSpawner::BeginPlay()
+{
+	Super::BeginPlay();
+	Setup();
 }
 
 void AActorSpawner::Tick(float DeltaTime)
@@ -29,7 +43,7 @@ void AActorSpawner::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-bool AActorSpawner::CheckIfPackageCanBePicked(int32 index)
+bool AActorSpawner::CheckIfPackageCanBePicked(int32 index) const
 {
 	// We have to check if on top of this package there is no more packages
 	// next package in top has Z axis +1 so in array it is actor with 
@@ -50,6 +64,11 @@ bool AActorSpawner::CheckIfPackageCanBePicked(int32 index)
 		return true;
 
 	return false;
+}
+
+bool AActorSpawner::CheckIfAllPackagesPicked() const
+{
+	return (PickedPackages == TotalNumberOfPackages ? true : false);
 }
 
 void AActorSpawner::CreateBoardOnSpawnPoint()
@@ -239,6 +258,7 @@ void AActorSpawner::RemoveActorFromArray(uint32 index)
 	{
 		AllPackages[index]->Destroy();
 		AllPackages[index] = nullptr;
+		PickedPackages += 1;
 	}
 }
 

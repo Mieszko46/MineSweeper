@@ -41,6 +41,8 @@ private:
 	void Grab();
 	void Release();
 	void UpdateScannerDisplayValue(int packageMines);
+	void GameOver(FString text);
+	void Win();
 
 	// Return the Player position in world
 	FVector GetPlayerLocation() const;
