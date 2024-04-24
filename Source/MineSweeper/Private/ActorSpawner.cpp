@@ -148,7 +148,10 @@ void AActorSpawner::PlaceThePackages()
 			{
 				// Spawn object
 				FVector offset = FVector(PackageSize * X_RandomPosition, PackageSize * Y_RandomPosition, PackageSize * Z_Position);
+				FRotator randomRotation = FRotator(0.f, 90.f * FMath::RandHelper(4) , 0.f);
+
 				InitTransform.AddToTranslation(offset);
+				InitTransform.SetRotation(FQuat(randomRotation));
 				AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(ActorToSpawn, InitTransform, temp);
 
 				// Insert package to array
