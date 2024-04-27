@@ -7,6 +7,7 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "Misc/OutputDeviceNull.h"
+#include "Kismet/GameplayStatics.h"
 #include "CubePackage.h"
 #include "ActorSpawner.h"
 #include "Grabber.generated.h"
@@ -22,6 +23,12 @@ public:
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game")
+		FString GameOverText;
+
+	UPROPERTY(EditAnywhere, Category = "Game")
+		TObjectPtr<USoundBase> PickupSound = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mines")
 		int NearMines;

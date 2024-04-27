@@ -60,12 +60,14 @@ void UGrabber::HandlePickup(FString mouseButton)
 			{
 				FocusedActor = nullptr;
 				Spawner->RemoveActorFromArray(PackageIndex);
+				UGameplayStatics::PlaySound2D(GetWorld(), PickupSound);
 			}
 			else if (mouseButton == MINE && PickedPackage->IsItMine())
 			{
 				FocusedActor = nullptr;
 				Spawner->RemoveActorFromArray(PackageIndex);
 				Spawner->AssignNumbersOfNearMines();
+				UGameplayStatics::PlaySound2D(GetWorld(), PickupSound);
 			}
 			else 
 			{
@@ -122,15 +124,15 @@ void UGrabber::UpdateScannerDisplayValue(int packageMines)
 
 void UGrabber::GameOver(FString mouseButton)
 { 
-	UE_LOG(LogTemp, Error, TEXT("GAME OVER: %s"), 
-		(mouseButton != MINE ? TEXT("You picked a bomb!") : TEXT("It was not a bomb!")));
+	GameOverText = mouseButton != MINE ? TEXT("You picked a bomb!") : TEXT("It was not a bomb!");
+	FOutputDeviceNull OutputDeviceNull;
+	GetOwner()->CallFunctionByNameWithArguments(TEXT("GameLost"), OutputDeviceNull, nullptr, true);
 }
 
 void UGrabber::Win()
 {
 	FOutputDeviceNull OutputDeviceNull;
-
-	GetOwner()->CallFunctionByNameWithArguments(TEXT("EndGame"), OutputDeviceNull, nullptr, true);
+	GetOwner()->CallFunctionByNameWithArguments(TEXT("GameWon"), OutputDeviceNull, nullptr, true);
 }
 
 FVector UGrabber::GetPlayerLocation() const
