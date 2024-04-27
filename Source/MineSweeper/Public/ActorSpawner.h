@@ -81,6 +81,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		uint32 PackageSize;
 
+	UPROPERTY(EditAnywhere, Category = "Spawning", meta = (ClampMin = "1.0", ClampMax = "3.0", UIMin = "1.0", UIMax = "3.0"))
+		float FactorOfBoardComplexity = 1.5f;
+
 	TArray<AActor*> AllPackages;
 	uint32 ArraySpace;
 
@@ -90,8 +93,6 @@ private:
 	uint32 TotalNumberOfPackages;
 	uint32 TotalNumberOfMines;
 	uint32 PickedPackages;
-
-	const float FactorOfBoardComplexity = 1.5f;
 	#pragma endregion
 
 };

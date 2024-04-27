@@ -129,6 +129,7 @@ void UGrabber::GameOver(FString mouseButton)
 void UGrabber::Win()
 {
 	FOutputDeviceNull OutputDeviceNull;
+
 	GetOwner()->CallFunctionByNameWithArguments(TEXT("EndGame"), OutputDeviceNull, nullptr, true);
 }
 

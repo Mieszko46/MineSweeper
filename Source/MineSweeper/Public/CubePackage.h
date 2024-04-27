@@ -45,10 +45,10 @@ protected:
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-		UCapsuleComponent* CapsuleComp;
+		TObjectPtr<UCapsuleComponent> CapsuleComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-		UStaticMeshComponent* BaseMesh;
+		TObjectPtr<UStaticMeshComponent> BaseMesh;
 
 	AActor* PackageSpawner;
 

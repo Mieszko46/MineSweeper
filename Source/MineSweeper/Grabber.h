@@ -60,10 +60,10 @@ private:
 
 	#pragma region Attributes
 	UPROPERTY()
-		UPhysicsHandleComponent* PhysicsHandle = nullptr;
+		TObjectPtr<UPhysicsHandleComponent> PhysicsHandle = nullptr;
 
 	UPROPERTY()
-		UInputComponent* InputComponent = nullptr;
+		TObjectPtr<UInputComponent> InputComponent = nullptr;
 
 	AActor* FocusedActor;
 
