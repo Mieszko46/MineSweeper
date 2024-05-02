@@ -6,6 +6,7 @@ class AActorSpawner;
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/CapsuleComponent.h"
+#include <Kismet/GameplayStatics.h>
 #include "CubePackage.generated.h"
 
 UCLASS()
@@ -39,6 +40,8 @@ public:
 	void SetIsOnLastPositionInZ_Axis(bool isLast);
 	bool GetIsOnLastPositionInZ_Axis() const;
 
+	void Explode() const;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -49,6 +52,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 		TObjectPtr<UStaticMeshComponent> BaseMesh;
+
+	UPROPERTY(EditAnywhere, Category = "Explosion")
+		TObjectPtr<UParticleSystem> ExplodeParticles = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Explosion")
+		TObjectPtr<USoundBase> ExplodeSound = nullptr;
 
 	AActor* PackageSpawner;
 

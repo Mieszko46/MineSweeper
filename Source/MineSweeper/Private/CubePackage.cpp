@@ -107,3 +107,15 @@ bool ACubePackage::GetIsOnLastPositionInZ_Axis() const
 {
 	return isOnLastPositionIn_Z;
 }
+
+void ACubePackage::Explode() const
+{
+	if (ExplodeParticles)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(this, ExplodeParticles, GetActorLocation(), GetActorRotation());
+	}
+	if (ExplodeSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ExplodeSound, GetActorLocation());
+	}
+}

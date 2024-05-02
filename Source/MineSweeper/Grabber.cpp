@@ -71,6 +71,7 @@ void UGrabber::HandlePickup(FString mouseButton)
 			}
 			else 
 			{
+				PickedPackage->Explode();
 				GameOver(mouseButton);
 			}
 
