@@ -79,10 +79,16 @@ private:
 		TSoftObjectPtr<ASpawnerTarget> SpawnerTargetPoint;
 
 	UPROPERTY(EditAnywhere, Category = "Spawning")
-		uint32 PackageSize;
+		uint32 PackageSize = 100;
 
 	UPROPERTY(EditAnywhere, Category = "Spawning", meta = (ClampMin = "1.0", ClampMax = "3.0", UIMin = "1.0", UIMax = "3.0"))
 		float FactorOfBoardComplexity = 1.5f;
+
+	UPROPERTY(EditAnywhere, Category = "Spawning", meta = (ClampMin = "1.0", ClampMax = "100.0", UIMin = "1.0", UIMax = "100.0"))
+		uint32 TotalNumberOfPackages = 10;
+
+	UPROPERTY(EditAnywhere, Category = "Spawning", meta = (ClampMin = "1.0", ClampMax = "100.0", UIMin = "1.0", UIMax = "100.0"))
+		uint32 TotalNumberOfMines = 5;
 
 	TArray<AActor*> AllPackages;
 	uint32 ArraySpace;
@@ -90,8 +96,6 @@ private:
 	// Board dimension
 	uint32 X_Width, Y_Height, Z_Deep;
 
-	uint32 TotalNumberOfPackages;
-	uint32 TotalNumberOfMines;
 	uint32 PickedPackages;
 	#pragma endregion
 

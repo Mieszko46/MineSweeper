@@ -4,13 +4,11 @@
 
 //TODO: przed RandomizeBoardDimensions() trzeba podaæ od gracza liczbê paczek
 
-AActorSpawner::AActorSpawner(): 
+AActorSpawner::AActorSpawner() :
 	X_Width(1),
 	Y_Height(1),
 	Z_Deep(1),
-	PackageSize(100),
-	TotalNumberOfPackages(10),
-	TotalNumberOfMines(5),
+	ArraySpace(1),
 	PickedPackages(0)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -22,9 +20,7 @@ void AActorSpawner::Setup()
 	X_Width = 1;
 	Y_Height = 1;
 	Z_Deep = 1;
-	PackageSize = 100;
-	TotalNumberOfPackages = 10;
-	TotalNumberOfMines = 5;
+	ArraySpace = 1;
 	PickedPackages = 0;
 
 	CreateBoardOnSpawnPoint();
@@ -219,6 +215,9 @@ uint32 AActorSpawner::CountNearMines(uint32 index)
 
 void AActorSpawner::RandomizeMinesPlacement()
 {
+	if (TotalNumberOfMines > TotalNumberOfPackages)
+		TotalNumberOfMines = TotalNumberOfPackages - TotalNumberOfPackages * 0.1;
+
 	uint32 counter = TotalNumberOfMines;
 	while (counter > 0)
 	{
