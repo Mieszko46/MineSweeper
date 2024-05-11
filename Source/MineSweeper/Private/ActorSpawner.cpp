@@ -11,7 +11,6 @@ AActorSpawner::AActorSpawner() :
 	ArraySpace(1),
 	PickedPackages(0)
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 }
 
@@ -23,9 +22,20 @@ void AActorSpawner::Setup()
 	ArraySpace = 1;
 	PickedPackages = 0;
 
+	UE_LOG(LogTemp, Warning, TEXT("Packages: %d"), TotalNumberOfPackages);
+	UE_LOG(LogTemp, Warning, TEXT("Mines: %d"), TotalNumberOfMines);
+	UE_LOG(LogTemp, Warning, TEXT("Complexity: %f"), FactorOfBoardComplexity);
+
 	CreateBoardOnSpawnPoint();
 	RandomizeMinesPlacement();
 	AssignNumbersOfNearMines();
+}
+
+void AActorSpawner::SetupParams(int packages, int mines, float complexity)
+{
+	TotalNumberOfPackages = static_cast<uint32>(packages);
+	TotalNumberOfMines = static_cast<uint32>(mines);
+	FactorOfBoardComplexity = complexity;
 }
 
 void AActorSpawner::BeginPlay()

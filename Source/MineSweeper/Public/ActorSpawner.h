@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "CubePackage.h"
 #include "SpawnerTarget.h"
+#include <Kismet/GameplayStatics.h>
 #include "ActorSpawner.generated.h"
 
 UCLASS()
@@ -26,6 +27,9 @@ public:
 	void RemoveActorFromArray(uint32 index);
 	void AssignNumbersOfNearMines();
 	bool CheckIfAllPackagesPicked() const;
+
+	UFUNCTION(BlueprintCallable)
+		void SetupParams(int packages, int mines, float complexity);
 
 protected:
 	// Called when the game starts or when spawned
@@ -81,14 +85,14 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		uint32 PackageSize = 100;
 
-	UPROPERTY(EditAnywhere, Category = "Spawning", meta = (ClampMin = "1.0", ClampMax = "3.0", UIMin = "1.0", UIMax = "3.0"))
-		float FactorOfBoardComplexity = 1.5f;
-
 	UPROPERTY(EditAnywhere, Category = "Spawning", meta = (ClampMin = "1.0", ClampMax = "100.0", UIMin = "1.0", UIMax = "100.0"))
 		uint32 TotalNumberOfPackages = 10;
 
 	UPROPERTY(EditAnywhere, Category = "Spawning", meta = (ClampMin = "1.0", ClampMax = "100.0", UIMin = "1.0", UIMax = "100.0"))
 		uint32 TotalNumberOfMines = 5;
+
+	UPROPERTY(EditAnywhere, Category = "Spawning", meta = (ClampMin = "1.0", ClampMax = "3.0", UIMin = "1.0", UIMax = "3.0"))
+		float FactorOfBoardComplexity = 1.5f;
 
 	TArray<AActor*> AllPackages;
 	uint32 ArraySpace;
