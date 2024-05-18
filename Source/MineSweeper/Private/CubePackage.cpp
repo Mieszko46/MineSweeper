@@ -119,3 +119,9 @@ void ACubePackage::Explode() const
 		UGameplayStatics::PlaySoundAtLocation(this, ExplodeSound, GetActorLocation());
 	}
 }
+
+void ACubePackage::Defuse()
+{
+	FOutputDeviceNull OutputDeviceNull;
+	CallFunctionByNameWithArguments(TEXT("DefusePackage"), OutputDeviceNull, nullptr, true);
+}

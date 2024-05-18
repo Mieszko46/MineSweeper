@@ -7,6 +7,7 @@ class AActorSpawner;
 #include "GameFramework/Actor.h"
 #include "Components/CapsuleComponent.h"
 #include <Kismet/GameplayStatics.h>
+#include "Misc/OutputDeviceNull.h"
 #include "CubePackage.generated.h"
 
 UCLASS()
@@ -41,6 +42,8 @@ public:
 	bool GetIsOnLastPositionInZ_Axis() const;
 
 	void Explode() const;
+	void Defuse();
+
 
 protected:
 	// Called when the game starts or when spawned

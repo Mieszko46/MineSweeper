@@ -64,10 +64,11 @@ void UGrabber::HandlePickup(FString mouseButton)
 			}
 			else if (mouseButton == MINE && PickedPackage->IsItMine())
 			{
+				PickedPackage->Defuse();
 				FocusedActor = nullptr;
 				Spawner->RemoveActorFromArray(PackageIndex);
 				Spawner->AssignNumbersOfNearMines();
-				UGameplayStatics::PlaySound2D(GetWorld(), PickupSound);
+				UGameplayStatics::PlaySound2D(GetWorld(), DefuseSound);
 			}
 			else 
 			{

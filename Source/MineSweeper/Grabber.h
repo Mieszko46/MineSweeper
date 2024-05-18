@@ -30,6 +30,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Game")
 		TObjectPtr<USoundBase> PickupSound = nullptr;
 
+	UPROPERTY(EditAnywhere, Category = "Game")
+		TObjectPtr<USoundBase> DefuseSound = nullptr;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mines")
 		int NearMines;
 
