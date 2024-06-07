@@ -80,7 +80,7 @@ void ACubePackage::SetIsActorFocued(bool isFocused, bool canBePicked)
 	if (canBePicked) 
 	{
 		BaseMesh->SetRenderCustomDepth(true);
-		BaseMesh->SetCustomDepthStencilValue(1);
+		BaseMesh->SetCustomDepthStencilValue(2);
 	}
 	else if (isFocused && !canBePicked)
 	{

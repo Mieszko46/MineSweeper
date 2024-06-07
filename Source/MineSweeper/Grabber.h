@@ -47,9 +47,6 @@ protected:
 
 private:
 	// Checking for Physics Handle Component. Protection from nullptr
-	void FindPhysicsHandle();
-	void Grab();
-	void Release();
 	void UpdateScannerDisplayValue(int packageMines);
 	void GameOver(FString text);
 	void Win();
@@ -69,12 +66,6 @@ private:
 	void HighlightObject(AActor* HitActor);
 
 	#pragma region Attributes
-	UPROPERTY()
-		TObjectPtr<UPhysicsHandleComponent> PhysicsHandle = nullptr;
-
-	UPROPERTY()
-		TObjectPtr<UInputComponent> InputComponent = nullptr;
-
 	AActor* FocusedActor;
 
 	// sets debug line length

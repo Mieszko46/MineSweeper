@@ -18,18 +18,11 @@ UGrabber::UGrabber():
 void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
-
-	FindPhysicsHandle();
 }
 
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	FVector PlayerViewLocation = GetPlayerLocation();
-	FRotator PlayerViewRotation = GetPlayerRotation();
-
-	FVector LineTraceEnd = PlayerViewLocation + PlayerViewRotation.Vector() * m_Reach;
 
 	FHitResult HitResult = GetFirstPhysicsBodyInReach();
 	AActor* ActorHit = HitResult.GetActor();
@@ -82,38 +75,6 @@ void UGrabber::HandlePickup(FString mouseButton)
 				Win();
 			}
 		}
-	}
-}
-
-void UGrabber::FindPhysicsHandle()
-{
-	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-
-	if (PhysicsHandle == nullptr)
-		UE_LOG(LogTemp, Warning, TEXT("No physics handle component included to object: %s !"), *GetOwner()->GetName());
-}
-
-void UGrabber::Grab()
-{
-	FHitResult HitResult = GetFirstPhysicsBodyInReach();
-	UPrimitiveComponent* ComponentToGrab = HitResult.GetComponent();
-
-	AActor* ActorHit = HitResult.GetActor();
-	if (ActorHit)
-	{
-		if (PhysicsHandle)
-			return;
-		PhysicsHandle->GrabComponentAtLocation(ComponentToGrab, NAME_None, GetPlayerReach());
-	};
-}
-
-void UGrabber::Release()
-{
-	if (PhysicsHandle->GrabbedComponent)
-	{
-		if (!PhysicsHandle)
-			return;
-		PhysicsHandle->ReleaseComponent();
 	}
 }
 

@@ -209,7 +209,6 @@ uint32 AActorSpawner::CountNearMines(uint32 index)
 	uint32 NumberOfMines = 0;
 	uint32 x, y, z;
 	CalculateCoordinatesFromIndex(index, x, y, z);
-	UE_LOG(LogTemp, Warning, TEXT("Package mines of index: %d, coords %d, %d ,%d"), index, x, y, z);
 
 	if (x > 0) NumberOfMines += IsPackageAMine(x - 1, y, z);
 	if (x < X_Width - 1) NumberOfMines += IsPackageAMine(x + 1, y, z);
